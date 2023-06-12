@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Result</title>
+</head>
+<body>
+  <h3>회원님의 하루기준 영양정보는:</h3>
+  <p>칼로리: {{ calorie }} (kcal)</p>
+  <p>탄수화물: {{ carbohydrates }} (g)</p>
+  <p>단백질: {{ protein }} (g)</p>
+  <p>지방: {{ fat }} (g)</p>
+  <p>당: {{ sugar }} (g) 이하</p>
+  <p>나트륨: {{ sodium }} (mg) 이하</p>
+  <h3>입니다.</h3>
+
+  <form action="{% url 'nutrition_data_view' age=age gender=gender %}" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="age" value="{{ age }}">
+    <input type="hidden" name="gender" value="{{ gender }}">
+  </form>
+  <form action="/sprint/" method="GET">
+    {% csrf_token %}
+    <input type="submit" value="확인">
+  </form>
+</body>
+</html>
