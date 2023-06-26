@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>week_11_diary</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #EDEDED;
+      background-image: url('./images/pattern.png');
+      background-size: 100px;
+    }
+    .bookcover {
+      background-color: #b4d1da;
+      width: 320px;
+      height: 300px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: 30px;
+      padding: 15px;
+      border-radius: 15px;
+    }
+
+    .bookdot {
+      width: 100%;
+      height: auto;
+      border: 1px dashed white;
+      border-radius: 1%;
+    }
+
+    .page {
+      background-color: white;
+      width: 100%;
+      height: auto;
+      border-radius: 1%;
+    }
+
+    .calendar {
+      margin: 10px;
+      border: 5px solid gray;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-radius: 10px;
+    }
+
+    .day {
+      margin: 10px;
+      text-align: center;
+    }
+
+    .diary {
+      margin: 10px;
+      overflow-y: scroll;
+      background-color: white;
+      font-size: larger;
+    }
+
+    .diary-box {
+
+      margin-bottom: 10px;
+      padding: 20px;
+      
+    }
+
+    .diary-date {
+      font-size: 0.75rem;
+      
+    }
+
+    .diary-text {
+      text-align: center;
+    }
+
+    .btn-group {
+      width: 100%;
+      margin: 10px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .btn-group button {
+      width: 100%;
+      margin: 5px;
+    }
+
+    .secret-button {
+      width: 35%;
+      margin: 20px auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    .secret-button button {
+      padding: 10px;
+      background-color: white;
+      color: white;
+      border: none;
+    }
+
+    .secret-button button:hover {
+      background-color: rgb(255, 70, 70);
+      transition: 800ms ease-in all;
+    }
+
+    .icon {
+      margin-right: 5px;
+    }
+
+    .nav-link {
+      color: #D53E83;
+      font-weight: bold;
+    }
+
+    .food-list {
+      display: none; /* 초기에는 숨김 */
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 20px;
+      text-align: center;
+    }
+
+    .food-list .card {
+    display: inline-block; 
+    text-align: left; 
+    margin: 0 auto; 
+    }
+
+    .food-list .card-img-top {
+      margin: 0 auto; /* 가운데 정렬 */
+    }
+
+    .food-list .card-body {
+      text-align: center; /* 가운데 정렬 */
+    }
+    .video-container {
+      display: none; /* 초기에는 숨김 */
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 400px;
+    }
+  </style>
+
+</head>
+<body>
+  <ul class="nav justify-content-end">
+    <li class="nav-item">
+      <a class="nav-link active" aria-current="page" href="#" id="home-link" style="font-size: larger;">홈</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" id="food-link" style="font-size: larger;">추천음식</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" id="exercise-link" style="font-size: larger;">추천운동</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#" onclick="gomenu()" style="font-size: larger;">뒤로가기</a>
+    </li>
+  </ul>
+  <div class="bookcover">
+    <div class="bookdot">
+      <div class="page">
+        <div class="profile">
+          <div class="profile-dropdown">
+            <div class="dropdown">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="main-content">
+        <div class="diary">
+          <div class="diary-box">
+            <div class="calendar">
+              <div class="day" id="current-date"></div>
+              <div class="month" id="basic-text"></div>
+            </div>
+            <div class="diary-text" id="basic-text"><span style="font-weight: bold;">{{ nickname }}</span>님의 일주일<br></br>{{ date_with_max_difference }} {{ day_of_week }}에<br><span style="font-weight: bold; color: darkblue;">{{ nutrient_max }}</span>이 <span style="font-weight: bold; color: red;">{{ difference_sign }}</span>했어요.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="food-list" style="display: none;">
+    {% if nutrient_max and difference_sign %}
+      <div class="card" style="width: 18rem;">
+        {% if nutrient_max == '탄수화물' %}
+          {% if difference_sign == '부족' %}
+            <img src="/static/userapp/현미.jpg" class="card-img-top" alt="현미">
+            <div class="card-body">
+              <p class="card-text">현미 : 동맥경화 예방, 노화방지</p>
+            </div>
+          {% elif difference_sign == '과다' %}
+            <img src="/static/userapp/고구마.jpg" class="card-img-top" alt="현미">
+            <div class="card-body">
+              <p class="card-text">고구마 : 풍부한 식이섬유 함유</p>
+            </div>
+            {% endif %}
+        {% elif nutrient_max == '단백질' %}
+          {% if difference_sign == '부족' %}
+            <img src="/static/userapp/닭고기.jpg" class="card-img-top" alt="닭고기">
+            <div class="card-body">
+              <p class="card-text">닭고기 : 동물성 단백질 풍부</p>
+            </div>
+          {% elif difference_sign == '과다' %}
+            <img src="/static/userapp/소고기.jpg" class="card-img-top" alt="소고기">
+            <div class="card-body">
+              <p class="card-text">소고기 : 연골, 피부, 혈액 생성하는데 도움</p>
+            </div>
+          {% endif %}
+        {% elif nutrient_max == '지방' %}
+          {% if difference_sign == '부족' %}
+            <img src="/static/userapp/고등어.jpg" class="card-img-top" alt="고등어">
+            <div class="card-body">
+              <p class="card-text">고등어 : 오메가-3 지방산 풍부</p>
+            </div>
+          {% elif difference_sign == '과다' %}
+            <img src="/static/userapp/오이.jpg" class="card-img-top" alt="오이">
+            <div class="card-body">
+              <p class="card-text">오이 : 장관에서 음식찌꺼기를 내보내는 것을 촉진</p>
+            </div>
+          {% endif %}
+        {% elif nutrient_max == '나트륨' %}
+          {% if difference_sign == '부족' %}
+            <img src="/static/userapp/새우.jpg" class="card-img-top" alt="새우">
+            <div class="card-body">
+              <p class="card-text">새우: 삼인산나트륨 풍부</p>
+            </div>
+            {% elif difference_sign == '과다' %}
+            <img src="/static/userapp/숭늉.jpg" class="card-img-top" alt="숭늉">
+            <div class="card-body">
+              <p class="card-text">숭늉 : 나트륨 감소 효과</p>
+            </div>
+        {% elif nutrient_max == '당류' %}
+          {% if difference_sign == '부족' %}
+            <img src="/static/userapp/파인애플.jpg" class="card-img-top" alt="파인애플">
+            <div class="card-body">
+              <p class="card-text">파인애플 : 당뇨 전단계인 인슐린 저항성 유발</p>
+            </div>
+          {% elif difference_sign == '과다' %}
+            <img src="/static/userapp/해조류.jpg" class="card-img-top" alt="해조류">
+            <div class="card-body">
+              <p class="card-text">해조류 : 혈당을 천천히 올림에서 각각 삼인산나트륨 풍부</p>
+            </div>
+          {% endif %}
+          {% endif %}
+      </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+    </div>
+  </div>
+  <div class="video-container" style="display: none; margin-top: 20px;">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/v4qgoxLcjc4" frameborder="0" allowfullscreen></iframe>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // 현재 날짜 생성
+      var today = new Date();
+      var options = { weekday: 'short', month: 'short', day: 'numeric' };
+      var formattedDate = today.toLocaleDateString('ko-KR', options).toUpperCase();
+
+      // 현재 날짜를 표시하는 요소에 동적으로 변경된 날짜 적용
+      $("#current-date").html(formattedDate);
+
+      $("#home-link").click(function() {
+        $(".food-list").hide();
+        $(".video-container").hide();
+      });
+
+      $("#food-link").click(function() {
+        $(".food-list").show();
+        $(".video-container").hide();
+      });
+
+      $("#exercise-link").click(function() {
+        $(".food-list").hide();
+        $(".video-container").show();
+      });
+    });
+    function gomenu() {
+            window.location.href = '/user/menu/';
+        }
+  </script>
+</body>
+</html>
